@@ -8,7 +8,7 @@ Devise.setup do |config|
   # confirmation, reset password and unlock tokens in the database.
   # Devise will use the `secret_key_base` as its `secret_key`
   # by default. You can change it below and use your own secret key.
-  # config.secret_key = '1c772ba227319fb542e9e1ffb28f989430d2b7a0ed0c4146132d393a625b7891e0e037c62b06affc2bd2afd02ff7b2403735455bf300da5873b15896df2fbe06'
+  # config.secret_key = '7c6eb46c4dafe128a4949c4a1d9dca4bc44ab98bb2fa4cc3728965075cb871895e862e8bf6f26c4c19c67299be3a0d6e1276f3fa3b291f29aba33b44c8a6fa6e'
 
   # ==> Controller configuration
   # Configure the parent class to the devise controllers.
@@ -114,7 +114,7 @@ Devise.setup do |config|
   config.stretches = Rails.env.test? ? 1 : 11
 
   # Set up a pepper to generate the hashed password.
-  # config.pepper = '058a9e100f3297db08e2fea648745757ebfb747c91f7cd1839283603227c1d27d5ee382e577e9276684c8cb384027d2b5f3d6fc7baa3fe3924527434681d9ca6'
+  # config.pepper = '83cb9d5f92d384828373ae02c8ccee65a3bd103d3696a60ecddbc9f7cbc58c0f20b6c5083b8cc4f15f848c0448039d83af0261747b20fde5b9488aaa4c11880c'
 
   # Send a notification to the original email when the user's email is changed.
   # config.send_email_changed_notification = false
@@ -254,7 +254,7 @@ Devise.setup do |config|
   # config.navigational_formats = ['*/*', :html]
 
   # The default HTTP method used to sign out a resource. Default is :delete.
-  config.sign_out_via = :delete
+  config.sign_out_via = :get
 
   # ==> OmniAuth
   # Add a new OmniAuth provider. Check the wiki for more information on setting

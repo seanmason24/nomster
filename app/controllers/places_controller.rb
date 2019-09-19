@@ -1,5 +1,6 @@
 class PlacesController < ApplicationController
   before_action :authenticate_user!, only: [:new, :create]
+
   def index
     @places = Place.all
   end
@@ -11,6 +12,10 @@ class PlacesController < ApplicationController
   def create
     current_user.places.create(place_params)
     redirect_to root_path
+  end
+
+  def show
+    @place = Place.find(params[:id])
   end
 
   private

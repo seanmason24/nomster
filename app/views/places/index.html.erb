@@ -9,3 +9,16 @@
     <% end %>
   </div>
 <% end %>
+
+<% if places.comment.present? %>
+  <div class="col-12">
+      <blockquote>
+        <% if comments.last.humanized_rating.present? %>
+          <b><%= place.comments.humanized_rating %></b> -
+        <% end %>
+        <%= comments.message %>
+        <small><%= comments.user.email %></small>
+      </blockquote>
+    </div>
+  </div>
+<% end %>

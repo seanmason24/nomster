@@ -1,7 +1,4 @@
 class Photo < ApplicationRecord
-  def show
-    @place = Place.find(params[:id])
-    @photo = Photo.new
-    
-  end
+  belongs_to :place
+  mount_uploader :picture, PictureUploader
 end

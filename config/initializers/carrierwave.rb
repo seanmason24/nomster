@@ -1,4 +1,4 @@
-# config/initializers/carrerwave.rb
+# config/initializers/carrierwave.rb
 
 
 CarrierWave.configure do |config|

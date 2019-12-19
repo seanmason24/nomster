@@ -3,32 +3,40 @@
   <i><%= @place.address %></i>
   <br/><br/>
   <p><%= @place.description %></p>
-  
+  <div class="float-right">
+    <% if current_user && current_user == @place.user %>
+      <%= link_to 'Edit', edit_place_path(@place), class:'btn btn-primary' %>
+      <%= link_to 'Destroy', place_path(@place), method: :delete, data: {confirm: 'Are you sure you want to delete this?'}, class: 'btn btn-danger' %>
+    <% end %>
+
+
+
+
    <style>
     html, body {
       height: 100%;
       margin: 0;
       padding: 0;
     }
+    <style>
     #map {
-      height: 100%;
+      height: 300px;
     }
+  </style>
   </style>
   </head>
   <body>
-  <div id="map"></div>
+  
 
   <% if @place.latitude.present? && @place.longitude.present? %>
+
   <script>
-
-    function initMap() {
+     function initMap() {
       var myLatLng = {lat: <%= @place.latitude %>, lng: <%= @place.longitude %>};
-
       var map = new google.maps.Map(document.getElementById('map'), {
-        zoom: 4,
+        zoom: 12,
         center: myLatLng
       });
-
       var marker = new google.maps.Marker({
         position: myLatLng,
         map: map,
@@ -37,69 +45,97 @@
     }
   </script>
 
-  <script async defer
-  src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCWVyfFFU9h7wvT5CHnnAF7HlZoDjrIyaA&callback=initMap">
-  </script>
 
+  <script async defer
+  src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAj_TR7hp0MMZdgkXyojZFMSJtXJfU15ps&callback=initMap">
+  </script> 
+
+  
+<% end %>
   <div id="map"></div>
+  
+<br />  
+
+
+</div>
+  <div class="clear"></div>
+    <%= simple_form_for @comment, url: place_comments_path(@place) do |f| %>
+      <%= f.input :message %>
+      <%= f.input :rating, as: :select, collection: Comment::RATINGS %>
+      
   <% end %>
 
-  <div class="float-right">
-    <% if current_user && current_user == @place.user %>
-    <%= link_to 'Edit', edit_place_path(@place), class: 'btn btn-primary' %>
-    
-    <%= link_to 'Destroy', place_path(@place), method: :delete, data: {confirm: 'Are you sure you want to delete this?'},class: 'btn btn-danger' %>
-    <% end %>
+  <!-- Button trigger modal -->
+<button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal">
+  Add a comment
+</button>
+<!-- Comment Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Add a review</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+        <%= simple_form_for [@place, @comment] do |f| %>
+        <div class="modal-body">
+          <%= f.input :message, label: 'Comment' %>
+          <%= f.input :rating, as: :select, collection: Comment::RATINGS %>
+        </div>
+        <div class="modal-footer">
+          <%= f.submit "Add a review", class: 'btn btn-secondary' %>
+        </div>
+      <% end %>
+    </div>
   </div>
 </div>
 
 
-
-<!-- Button trigger modal -->
-<button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal">
-  Add a comment
-</button>
-
 <!-- Modal -->
-<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<div class="modal fade" id="photoModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">×</span>
         </button>
-        <h4 class="modal-title" id="myModalLabel">Add a comment</h4>
-      </div>
-      <%= simple_form_for @comment, url: place_comments_path(@place) do |f| %>
+      </div>  
+      <h4 class="modal-title" id="myModalLabel">Add a photo</h4>
+        <%= simple_form_for @photo, url: place_photos_path(@place) do |f| %>
+
         <div class="modal-body">
-          <%= f.input :message %>
-          <%= f.input :rating, as: :select, collection: Comment::RATINGS %>
+          <%= f.input :caption %>
+          <%= f.input :picture %>      
+          
         </div>
+        
+
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-          <%= f.submit "Add a Comment", class: 'btn btn-primary' %>
+          
+          <%= f.submit "Add a Photo", class: 'btn btn-primary' %>
         </div>
-      <% end %>
-      <%= simple_form_for @photo, url: place_photos_path(@place) do |f| %>
-      <div class="modal-body">
-        <%= f.input :picture %>
-       </div> 
-       <div>
-       <%= f.submit "Add a Picture", class: 'btn btn-primary' %>
-      </div>
       <% end %>
     </div>
   </div>
 </div>
 
-<div class="col-10 offset-1">
-<h1 class="float-left">Comments</h1>
+
+</button>
 <!-- Button trigger modal -->
+<button type="button" class="btn btn-primary btn-lg float-right"
+data-toggle="modal" data-target="#photoModal">
+Add a photo
+</button>
 </div>
 
 <div class="clear"></div>
 
+  
 
+<h1>Comments</h1>
 
 <div class="row">
 <% @place.comments.each do |comment| %>
@@ -107,22 +143,24 @@
   <div>
     <blockquote>
       <% if comment.humanized_rating.present? %>
-        <b><%= comment.humanized_rating %></b> -
-      <% end %>
-      <%= comment.message %>
-      <small><%= comment.user.email %></small>
+          <b><%= comment.rating %></b> -
+        <% end %> 
+        <%= comment.message %>
+        <small><%= comment.user.email %></small>
     </blockquote>
   </div>
 <% end %>
 </div>
 
-<div>
-  <% @place.photos.each do |photo| %>
-  <%= image_tag photo.picture.to_s, class: 'show-image-size' %>
-</div>
-</div>
 
 <div>
-  <%= photo.caption %>
+    <% @place.photos.each do |photo| %>
+    <%= image_tag photo.picture.to_s, class: 'show-image-size' %>
 </div>
-<% end %>
+  </div>
+  <div>
+    
+    <%= photo.caption %>
+  </div>
+  <% end %>
+</div>         
